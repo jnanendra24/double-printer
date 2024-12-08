@@ -8,11 +8,12 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.set("views", path.join(__dirname, "/views"));
 app.set("view engine", "ejs");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Save files in the 'uploads/' directory
+    cb(null, path.join(__dirname, "uploads/")); // Save files in the 'uploads/' directory
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -27,8 +28,8 @@ app.get("/", (req, res) => {
 });
 
 app.post("/split", upload.single("input"), async (req, res) => {
-  splitPdf(req.file.path);
-  fs.unlink(req.file.path, (err) => {
+  splitPdf(path.join(__dirname, req.file.path));
+  fs.unlink(path.join(__dirname, req.file.path), (err) => {
     if (err) {
       console.error("Error deleting file:", err);
       return res.status(500).send("Error deleting file");
@@ -38,7 +39,7 @@ app.post("/split", upload.single("input"), async (req, res) => {
 });
 
 app.get("/even", (req, res) => {
-  res.download("even_pages.pdf", (err) => {
+  res.download(path.join(__dirname, "even_pages.pdf"), (err) => {
     if (err) {
       console.error("Error sending file:", err);
 
@@ -51,7 +52,7 @@ app.get("/even", (req, res) => {
 });
 
 app.get("/odd", (req, res) => {
-  res.download("odd_pages.pdf", (err) => {
+  res.download(path.join(__dirname, "odd_pages.pdf"), (err) => {
     if (err) {
       console.error("Error sending file:", err);
 
