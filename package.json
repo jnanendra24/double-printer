@@ -1,0 +1,20 @@
+{
+  "name": "double-printer",
+  "version": "1.0.0",
+  "description": "Generates 2 pdf files. first one with odd pages and second one with even pages (in reverse optional). Helps to print a big stack of pdf pages efficiently.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "jvk",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.1",
+    "multer": "1.4.5-lts.1",
+    "nodemon": "^3.1.7",
+    "pdf-lib": "^1.17.1"
+  }
+}

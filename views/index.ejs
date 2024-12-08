@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Double Printer</title>
+  </head>
+  <body style="background-color: black; color: white; text-align: center">
+    <form id="form" method="post">
+      <input type="file" id="file" name="input" />
+      <button>submit</button>
+    </form>
+  </body>
+  <script>
+    const form = document.getElementById("form");
+
+    function downloadPDF(url, filename) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const fileRes = await fetch(url);
+          if (!fileRes.ok) {
+            return reject(
+              new Error(`Failed to fetch file: ${fileRes.statusText}`)
+            );
+          }
+          const file = await fileRes.blob();
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(file);
+          link.download = filename;
+          link.click();
+          URL.revokeObjectURL(link.href);
+          resolve(); // Resolve the promise when the file has been successfully "downloaded"
+        } catch (error) {
+          reject(error); // Reject the promise on error
+        }
+      });
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const file = document.getElementById("file").files[0];
+      const formData = new FormData();
+      formData.append("input", file);
+      const res = await fetch("/split", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+      if (res.ok) {
+        await downloadPDF("/even", "even_pages.pdf");
+        await downloadPDF("/odd", "odd_pages.pdf");
+      }
+    });
+  </script>
+</html>
